@@ -3,221 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>全肯定チャットボット</title>
+    <title>全肯定チャットボット 💖</title>
+    <meta name="description" content="あなたを全力で肯定してくれるAIチャットボット。どんな時でもあなたの味方です！">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- 設定画面 -->
-    <div id="setupScreen" class="screen active">
-        <div class="setup-container">
-            <div class="setup-header">
-                <h1>✨ あなた専用ボット設定</h1>
-                <p>ボットをあなた好みにカスタマイズしましょう</p>
+    <div class="container">
+        <!-- 設定画面 -->
+        <div id="settings-screen" class="screen active">
+            <div class="card settings-card">
+                <div class="card-header">
+                    <h1>🌟 全肯定チャットボット 🌟</h1>
+                    <p class="subtitle">あなたを全力で肯定してくれるAIです！</p>
+                </div>
+                
+                <div class="settings-form">
+                    <div class="setting-group">
+                        <label class="setting-label">
+                            <span class="label-icon">👤</span>
+                            ボットの性別
+                        </label>
+                        <div class="option-buttons">
+                            <button class="option-btn active" data-setting="gender" data-value="female">女性</button>
+                            <button class="option-btn" data-setting="gender" data-value="male">男性</button>
+                            <button class="option-btn" data-setting="gender" data-value="neutral">中性</button>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <label class="setting-label">
+                            <span class="label-icon">🎂</span>
+                            年齢層
+                        </label>
+                        <div class="option-buttons">
+                            <button class="option-btn" data-setting="age" data-value="teen">10代</button>
+                            <button class="option-btn active" data-setting="age" data-value="twenties">20代</button>
+                            <button class="option-btn" data-setting="age" data-value="older">30代以上</button>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <label class="setting-label">
+                            <span class="label-icon">💬</span>
+                            話し方
+                        </label>
+                        <div class="option-buttons">
+                            <button class="option-btn" data-setting="style" data-value="polite">敬語</button>
+                            <button class="option-btn active" data-setting="style" data-value="casual">タメ口</button>
+                            <button class="option-btn" data-setting="style" data-value="gyaru">ギャル語</button>
+                            <button class="option-btn" data-setting="style" data-value="kansai">関西弁</button>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <label class="setting-label">
+                            <span class="label-icon">✨</span>
+                            話し方の癖（任意）
+                        </label>
+                        <input type="text" id="quirk-input" class="text-input" placeholder="例：語尾に「にゃ」をつける">
+                    </div>
+                </div>
+
+                <button id="start-chat-btn" class="primary-btn">
+                    チャットを始める 💬
+                </button>
             </div>
+        </div>
 
-            <form id="setupForm" class="setup-form">
-                <div class="form-group">
-                    <label for="botName">ボット名</label>
-                    <input type="text" id="botName" placeholder="e.g. あいちゃん" value="あいちゃん">
+        <!-- チャット画面 -->
+        <div id="chat-screen" class="screen">
+            <div class="card chat-card">
+                <div class="chat-header">
+                    <button id="settings-btn" class="icon-btn" title="設定を変更">⚙️</button>
+                    <h2>全肯定チャット 💖</h2>
+                    <button id="clear-btn" class="icon-btn" title="履歴をクリア">🗑️</button>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="botGender">性別</label>
-                        <select id="botGender">
-                            <option value="女性">女性</option>
-                            <option value="男性">男性</option>
-                            <option value="中性">中性</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="botAge">年代</label>
-                        <select id="botAge">
-                            <option value="10代">10代</option>
-                            <option value="20代" selected>20代</option>
-                            <option value="30代">30代</option>
-                            <option value="40代">40代</option>
-                            <option value="50代以上">50代以上</option>
-                        </select>
-                    </div>
+                <div id="chat-messages" class="chat-messages">
+                    <!-- メッセージがここに追加される -->
                 </div>
 
-                <div class="form-group">
-                    <label for="botLanguage">口調</label>
-                    <select id="botLanguage">
-                        <option value="敬語">敬語</option>
-                        <option value="丁寧語" selected>丁寧語</option>
-                        <option value="カジュアル">カジュアル</option>
-                        <option value="オタク語">オタク語</option>
-                        <option value="関西弁">関西弁</option>
-                    </select>
+                <div class="chat-input-area">
+                    <textarea id="message-input" class="message-input" placeholder="メッセージを入力..." rows="1"></textarea>
+                    <button id="send-btn" class="send-btn" disabled>
+                        <span class="send-icon">➤</span>
+                    </button>
                 </div>
-
-                <div class="form-group">
-                    <label for="botHabits">話し方の特徴</label>
-                    <textarea id="botHabits" placeholder="e.g. よく絵文字を使う, 推し活についての話が好き, ポジティブ"></textarea>
-                </div>
-
-                <button type="button" class="btn btn-primary" id="startChatBtn">チャット開始</button>
-            </form>
+            </div>
         </div>
     </div>
 
-    <!-- チャット画面 -->
-    <div id="chatScreen" class="screen">
-        <div class="chat-container">
-            <!-- ヘッダー -->
-            <div class="chat-header">
-                <div class="header-content">
-                    <h1 id="botNameDisplay">あいちゃん</h1>
-                    <p id="botStatusDisplay">オンライン</p>
-                </div>
-                <button class="btn btn-small" id="resetBtn">設定変更</button>
-            </div>
-
-            <!-- メッセージ表示エリア -->
-            <div id="messageContainer" class="message-container"></div>
-
-            <!-- 入力エリア -->
-            <div class="chat-input-area">
-                <div class="input-wrapper">
-                    <input 
-                        type="text" 
-                        id="userInput" 
-                        placeholder="メッセージを入力..." 
-                        autocomplete="off"
-                    >
-                    <button type="button" class="btn-send" id="sendBtn">送信</button>
-                </div>
-                <p class="input-hint">何を話しかけてもボットが応援してくれます💕</p>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // ==========================================
-        // メイン処理
-        // ==========================================
-        const setupScreen = document.getElementById('setupScreen');
-        const chatScreen = document.getElementById('chatScreen');
-        const setupForm = document.getElementById('setupForm');
-        const startChatBtn = document.getElementById('startChatBtn');
-        const resetBtn = document.getElementById('resetBtn');
-
-        let botConfig = {
-            name: 'あいちゃん',
-            gender: '女性',
-            age: '20代',
-            language: '丁寧語',
-            habits: ''
-        };
-
-        // 設定読み込み
-        function loadConfig() {
-            const saved = localStorage.getItem('botConfig');
-            if (saved) {
-                botConfig = JSON.parse(saved);
-                applyConfig();
-                switchToChat();
-            }
-        }
-
-        // 設定を適用
-        function applyConfig() {
-            document.getElementById('botName').value = botConfig.name;
-            document.getElementById('botGender').value = botConfig.gender;
-            document.getElementById('botAge').value = botConfig.age;
-            document.getElementById('botLanguage').value = botConfig.language;
-            document.getElementById('botHabits').value = botConfig.habits;
-            document.getElementById('botNameDisplay').textContent = botConfig.name;
-        }
-
-        // 設定保存
-        function saveConfig() {
-            botConfig = {
-                name: document.getElementById('botName').value || 'あいちゃん',
-                gender: document.getElementById('botGender').value,
-                age: document.getElementById('botAge').value,
-                language: document.getElementById('botLanguage').value,
-                habits: document.getElementById('botHabits').value
-            };
-            localStorage.setItem('botConfig', JSON.stringify(botConfig));
-        }
-
-        // 画面切り替え
-        function switchToChat() {
-            setupScreen.classList.remove('active');
-            chatScreen.classList.add('active');
-        }
-
-        function switchToSetup() {
-            chatScreen.classList.remove('active');
-            setupScreen.classList.add('active');
-            applyConfig();
-        }
-
-        // チャット関連
-        const messageContainer = document.getElementById('messageContainer');
-        const userInput = document.getElementById('userInput');
-        const sendBtn = document.getElementById('sendBtn');
-
-        function addMessage(text, sender) {
-            const messageEl = document.createElement('div');
-            messageEl.className = `message message-${sender}`;
-            messageEl.innerHTML = `<div class="message-content">${escapeHtml(text)}</div>`;
-            messageContainer.appendChild(messageEl);
-            messageContainer.scrollTop = messageContainer.scrollHeight;
-        }
-
-        function escapeHtml(text) {
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            };
-            return text.replace(/[&<>"']/g, m => map[m]);
-        }
-
-        async function sendMessage() {
-            const text = userInput.value.trim();
-            if (!text) return;
-
-            addMessage(text, 'user');
-            userInput.value = '';
-
-            try {
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: text, config: botConfig })
-                });
-
-                if (!response.ok) throw new Error('APIエラー');
-                const data = await response.json();
-                addMessage(data.reply, 'bot');
-            } catch (error) {
-                console.error('エラー:', error);
-                addMessage('申し訳ありません...なんかエラーが起きちゃった💦', 'bot');
-            }
-        }
-
-        // イベントリスナー
-        startChatBtn.addEventListener('click', () => {
-            saveConfig();
-            switchToChat();
-        });
-
-        resetBtn.addEventListener('click', switchToSetup);
-
-        sendBtn.addEventListener('click', sendMessage);
-        userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
-        });
-
-        // 初期化
-        loadConfig();
-    </script>
+    <script src="app.js"></script>
 </body>
 </html>
