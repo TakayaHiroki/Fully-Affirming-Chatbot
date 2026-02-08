@@ -13,6 +13,8 @@
     --text-secondary: #6b7280;
     --accent: #10a37f;
     --accent-hover: #0d8a6a;
+    --danger: #ef4444;
+    --danger-hover: #dc2626;
     --sidebar-bg: #1f2937;
     --sidebar-text: #e5e7eb;
     --sidebar-hover: #374151;
@@ -26,7 +28,6 @@ body {
     line-height: 1.6;
 }
 
-/* ===== アプリレイアウト ===== */
 .app {
     display: flex;
     height: 100vh;
@@ -120,7 +121,7 @@ body {
     min-width: 0;
 }
 
-/* ===== ヘッダー（固定） ===== */
+/* ===== ヘッダー ===== */
 .header {
     display: flex;
     align-items: center;
@@ -133,8 +134,15 @@ body {
     z-index: 100;
 }
 
-.header h1 {
+.header-title {
     flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.header-title span {
     font-size: 1rem;
     font-weight: 600;
     white-space: nowrap;
@@ -142,8 +150,9 @@ body {
     text-overflow: ellipsis;
 }
 
-.menu-btn,
-.delete-btn {
+.edit-title-btn,
+.header-btn,
+.menu-btn {
     width: 36px;
     height: 36px;
     display: flex;
@@ -155,18 +164,27 @@ body {
     font-size: 1rem;
     cursor: pointer;
     transition: background 0.15s ease;
+    flex-shrink: 0;
 }
 
-.menu-btn:hover,
-.delete-btn:hover {
+.edit-title-btn:hover,
+.header-btn:hover,
+.menu-btn:hover {
     background: var(--bg);
+}
+
+.edit-title-btn {
+    border: none;
+    width: 28px;
+    height: 28px;
+    font-size: 0.9rem;
 }
 
 .menu-btn {
     display: none;
 }
 
-/* ===== 画面切り替え ===== */
+/* ===== 画面 ===== */
 .screen {
     display: none;
     flex: 1;
@@ -178,40 +196,87 @@ body {
     display: flex;
 }
 
-/* ===== 設定画面 ===== */
-.settings-container {
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 40px 24px;
+/* ===== モーダル ===== */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
 }
 
-.settings-container h2 {
-    font-size: 1.25rem;
-    margin-bottom: 8px;
+.modal.active {
+    display: flex;
 }
 
-.settings-desc {
+.modal-content {
+    background: var(--white);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 480px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-content.small {
+    max-width: 360px;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.modal-header h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.modal-close {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
     color: var(--text-secondary);
-    font-size: 0.9rem;
-    margin-bottom: 32px;
 }
 
-.settings-form {
+.modal-close:hover {
+    color: var(--text);
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-footer {
     display: flex;
-    flex-direction: column;
-    gap: 24px;
-    margin-bottom: 32px;
+    gap: 12px;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
 }
 
+/* ===== フォーム ===== */
 .setting-group {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    margin-bottom: 20px;
 }
 
 .setting-label {
+    display: block;
     font-size: 0.9rem;
     font-weight: 500;
+    margin-bottom: 10px;
 }
 
 .option-buttons {
@@ -220,13 +285,17 @@ body {
     flex-wrap: wrap;
 }
 
+.style-options .option-btn {
+    min-width: calc(50% - 4px);
+}
+
 .option-btn {
-    padding: 10px 16px;
-    background: var(--white);
+    padding: 10px 14px;
+    background: var(--bg);
     border: 1px solid var(--border);
     border-radius: 8px;
     font-family: inherit;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: var(--text);
     cursor: pointer;
     transition: all 0.15s ease;
@@ -245,7 +314,7 @@ body {
 .text-input {
     width: 100%;
     padding: 12px 14px;
-    background: var(--white);
+    background: var(--bg);
     border: 1px solid var(--border);
     border-radius: 8px;
     font-family: inherit;
@@ -263,13 +332,12 @@ body {
 }
 
 .primary-btn {
-    width: 100%;
-    padding: 14px;
+    padding: 12px 20px;
     background: var(--accent);
     border: none;
     border-radius: 8px;
     font-family: inherit;
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 500;
     color: white;
     cursor: pointer;
@@ -280,7 +348,38 @@ body {
     background: var(--accent-hover);
 }
 
-/* ===== チャット画面 ===== */
+.secondary-btn {
+    padding: 12px 20px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: var(--text);
+    cursor: pointer;
+}
+
+.secondary-btn:hover {
+    background: var(--border);
+}
+
+.danger-btn {
+    padding: 12px 20px;
+    background: transparent;
+    border: 1px solid var(--danger);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: var(--danger);
+    cursor: pointer;
+}
+
+.danger-btn:hover {
+    background: var(--danger);
+    color: white;
+}
+
+/* ===== チャット ===== */
 .chat-messages {
     flex: 1;
     overflow-y: auto;
@@ -322,7 +421,6 @@ body {
     line-height: 1.8;
 }
 
-/* ===== タイピングインジケータ ===== */
 .typing-indicator {
     display: flex;
     gap: 4px;
@@ -426,7 +524,7 @@ body {
         left: 0;
         top: 0;
         bottom: 0;
-        z-index: 200;
+        z-index: 300;
         transform: translateX(-100%);
     }
 
@@ -445,17 +543,8 @@ body {
     .chat-input-area {
         padding: 12px 16px 20px;
     }
-}
 
-/* オーバーレイ（モバイル時サイドバー用） */
-.overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 150;
-}
-
-.overlay.active {
-    display: block;
+    .style-options .option-btn {
+        min-width: 100%;
+    }
 }

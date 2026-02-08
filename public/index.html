@@ -4,95 +4,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>全肯定チャットボット 💖</title>
+    <title>全肯定チャットボット 作成者：あいす。</title>
     <meta name="description" content="あなたを全力で肯定してくれるAIチャットボット">
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
     <div class="app">
-        <!-- サイドバー（チャット一覧） -->
+        <!-- サイドバー -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <button class="new-chat-btn" id="new-chat-btn">
-                    ＋ 新しいチャット
-                </button>
+                <button class="new-chat-btn" id="new-chat-btn">＋ 新しいチャット</button>
             </div>
-            <div class="chat-list" id="chat-list">
-                <!-- チャット一覧がここに動的に追加される -->
-            </div>
+            <div class="chat-list" id="chat-list"></div>
             <div class="sidebar-footer">
-                <button class="sidebar-btn" id="settings-btn">⚙️ 設定</button>
+                <button class="sidebar-btn" id="global-settings-btn">⚙️ グローバル設定</button>
             </div>
         </aside>
 
         <!-- メインエリア -->
         <main class="main-area">
-            <!-- ヘッダー（常に表示） -->
+            <!-- ヘッダー -->
             <header class="header">
                 <button class="menu-btn" id="menu-btn">☰</button>
-                <h1 id="chat-title">新しいチャット</h1>
-                <button class="delete-btn" id="delete-chat-btn" title="このチャットを削除">🗑️</button>
+                <div class="header-title" id="header-title">
+                    <span id="chat-title">新しいチャット</span>
+                    <button class="edit-title-btn" id="edit-title-btn" title="タイトルを編集">✏️</button>
+                </div>
+                <button class="header-btn" id="chat-settings-btn" title="このチャットの設定">🎭</button>
             </header>
 
-            <!-- 設定画面 -->
-            <div id="settings-screen" class="screen">
-                <div class="settings-container">
-                    <h2>ボットの設定</h2>
-                    <p class="settings-desc">AIの性格をカスタマイズできます</p>
-
-                    <div class="settings-form">
+            <!-- チャット設定モーダル -->
+            <div class="modal" id="chat-settings-modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>チャットの設定</h3>
+                        <button class="modal-close" id="close-chat-settings">✕</button>
+                    </div>
+                    <div class="modal-body">
                         <div class="setting-group">
                             <label class="setting-label">👤 性別</label>
-                            <div class="option-buttons">
-                                <button class="option-btn active" data-setting="gender" data-value="female">女性</button>
-                                <button class="option-btn" data-setting="gender" data-value="male">男性</button>
-                                <button class="option-btn" data-setting="gender" data-value="neutral">中性</button>
+                            <div class="option-buttons" data-setting-group="gender">
+                                <button class="option-btn" data-value="female">女性</button>
+                                <button class="option-btn" data-value="male">男性</button>
+                                <button class="option-btn" data-value="neutral">中性</button>
                             </div>
                         </div>
-
                         <div class="setting-group">
                             <label class="setting-label">🎂 年齢層</label>
-                            <div class="option-buttons">
-                                <button class="option-btn" data-setting="age" data-value="teen">10代</button>
-                                <button class="option-btn active" data-setting="age" data-value="twenties">20代</button>
-                                <button class="option-btn" data-setting="age" data-value="older">30代以上</button>
+                            <div class="option-buttons" data-setting-group="age">
+                                <button class="option-btn" data-value="teen">10代</button>
+                                <button class="option-btn" data-value="twenties">20代</button>
+                                <button class="option-btn" data-value="older">30代以上</button>
                             </div>
                         </div>
-
                         <div class="setting-group">
                             <label class="setting-label">💬 話し方</label>
-                            <div class="option-buttons">
-                                <button class="option-btn" data-setting="style" data-value="polite">敬語</button>
-                                <button class="option-btn active" data-setting="style" data-value="casual">タメ口</button>
-                                <button class="option-btn" data-setting="style" data-value="gyaru">ギャル語</button>
-                                <button class="option-btn" data-setting="style" data-value="kansai">関西弁</button>
+                            <div class="option-buttons style-options" data-setting-group="style">
+                                <button class="option-btn" data-value="polite">敬語</button>
+                                <button class="option-btn" data-value="casual">タメ口</button>
+                                <button class="option-btn" data-value="gyaru">ギャル語</button>
+                                <button class="option-btn" data-value="kansai">関西弁</button>
+                                <button class="option-btn" data-value="ojisan">おじさん構文</button>
+                                <button class="option-btn" data-value="tsundere">ツンデレ</button>
+                                <button class="option-btn" data-value="butler">執事</button>
+                                <button class="option-btn" data-value="anime">アニメキャラ</button>
                             </div>
                         </div>
-
                         <div class="setting-group">
                             <label class="setting-label">✨ 話し方の癖（任意）</label>
-                            <input type="text" id="quirk-input" class="text-input" placeholder="例：語尾に「にゃ」をつける">
+                            <input type="text" id="chat-quirk-input" class="text-input" placeholder="例：語尾に「にゃ」をつける">
                         </div>
                     </div>
+                    <div class="modal-footer">
+                        <button class="danger-btn" id="delete-chat-btn">🗑️ チャットを削除</button>
+                        <button class="primary-btn" id="save-chat-settings">保存</button>
+                    </div>
+                </div>
+            </div>
 
-                    <button id="save-settings-btn" class="primary-btn">設定を保存</button>
+            <!-- タイトル編集モーダル -->
+            <div class="modal" id="title-modal">
+                <div class="modal-content small">
+                    <div class="modal-header">
+                        <h3>タイトルを編集</h3>
+                        <button class="modal-close" id="close-title-modal">✕</button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" id="title-input" class="text-input" placeholder="チャットのタイトル">
+                    </div>
+                    <div class="modal-footer">
+                        <button class="secondary-btn" id="cancel-title">キャンセル</button>
+                        <button class="primary-btn" id="save-title">保存</button>
+                    </div>
                 </div>
             </div>
 
             <!-- チャット画面 -->
             <div id="chat-screen" class="screen active">
-                <div class="chat-messages" id="chat-messages">
-                    <!-- メッセージがここに追加される -->
-                </div>
-
+                <div class="chat-messages" id="chat-messages"></div>
                 <div class="chat-input-area">
                     <div class="input-wrapper">
                         <textarea id="message-input" class="message-input" placeholder="メッセージを入力..."
                             rows="1"></textarea>
-                        <button id="send-btn" class="send-btn" disabled>
-                            <span>➤</span>
-                        </button>
+                        <button id="send-btn" class="send-btn" disabled>➤</button>
                     </div>
                 </div>
             </div>
