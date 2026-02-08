@@ -1,39 +1,18 @@
 {
   "name": "fully-affirming-chatbot",
-  "type": "javascript",
   "main": "worker.js",
   "compatibility_date": "2026-02-08",
-  "compatibility_flags": ["nodejs_compat"],
-  
-  "env": {
-    "development": {
-      "routes": [
-        {
-          "pattern": "http://localhost:8787/*",
-          "zone_name": "example.com"
-        }
-      ]
-    },
-    "production": {
-      "routes": [
-        {
-          "pattern": "https://fully-affirming-chatbot.k520264u.workers.dev/*",
-          "zone_name": "k520264u.workers.dev"
-        }
-      ]
-    }
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS"
   },
-
-  "env_vars": {
-    "development": {
-      "ENVIRONMENT": "development"
-    },
-    "production": {
-      "ENVIRONMENT": "production"
-    }
+  "vars": {
+    "ENVIRONMENT": "production"
   },
-
-  "secrets": [
-    "GEMINI_API_KEY"
-  ]
+  "observability": {
+    "enabled": true
+  }
 }
