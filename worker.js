@@ -1,120 +1,146 @@
 export default {
     async fetch(request, env) {
         const u = new URL(request.url);
+        const pathname = u.pathname;
 
-        // CORS設定
-        const origin = request.headers.get("Origin") || "";
-        const ALLOWED = new Set([
-            "http://localhost:8787",
-            "http://localhost:3000",
-            "https://fully-affirming-chatbot.k520264u.workers.dev"
-        ]);
-
-        const isAllowed = origin && ALLOWED.has(origin);
-        const corsHeaders = isAllowed
-            ? {
-                "Access-Control-Allow-Origin": origin,
-                "Vary": "Origin",
-                "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-                "Access-Control-Allow-Headers": "*",
-            }
-            : {};
-
-        // Preflight
-        if (request.method === "OPTIONS") {
-            if (!isAllowed) return new Response("Forbidden", { status: 403 });
-            return new Response(null, { status: 204, headers: corsHeaders });
+        // APIリクエストの処理
+        if (pathname.startsWith('/api/') || pathname === '/__health') {
+            return handleAPI(request, env, pathname);
         }
 
-        // ヘルスチェック
-        if (u.pathname === "/__health") {
-            return new Response(JSON.stringify({ ok: true, hasKey: Boolean(env.GEMINI_API_KEY) }), {
-                headers: { ...corsHeaders, "content-type": "application/json" },
-            });
+        // 静的アセット（HTML、CSS）の提供
+        if (env.ASSETS) {
+            return env.ASSETS.fetch(request);
         }
 
-        // チャットAPI
-        if (u.pathname === "/api/chat" && request.method === "POST") {
-            try {
-                if (!env.GEMINI_API_KEY) {
-                    return new Response(
-                        JSON.stringify({ error: "APIキーが設定されていません" }),
-                        { status: 500, headers: { ...corsHeaders, "content-type": "application/json" } }
-                    );
-                }
-
-                const body = await request.json();
-                const { message, config } = body;
-
-                if (!message) {
-                    return new Response(
-                        JSON.stringify({ error: "messageが必要です" }),
-                        { status: 400, headers: { ...corsHeaders, "content-type": "application/json" } }
-                    );
-                }
-
-                // システムプロンプト：全肯定ボット
-                const systemPrompt = buildSystemPrompt(config);
-
-                // Gemini API呼び出し
-                const geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
-
-                const geminiResponse = await fetch(geminiUrl, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "x-goog-api-key": env.GEMINI_API_KEY,
-                    },
-                    body: JSON.stringify({
-                        system: [
-                            {
-                                role: "user",
-                                parts: [{ text: systemPrompt }]
-                            }
-                        ],
-                        contents: [
-                            {
-                                role: "user",
-                                parts: [{ text: message }]
-                            }
-                        ],
-                        generationConfig: {
-                            temperature: 0.8,
-                            topK: 40,
-                            topP: 0.95,
-                            maxOutputTokens: 1024,
-                        },
-                    }),
-                });
-
-                if (!geminiResponse.ok) {
-                    const error = await geminiResponse.text();
-                    console.error("Gemini API error:", error);
-                    return new Response(
-                        JSON.stringify({ error: "APIエラーが発生しました" }),
-                        { status: 500, headers: { ...corsHeaders, "content-type": "application/json" } }
-                    );
-                }
-
-                const geminiData = await geminiResponse.json();
-                const reply = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || "エラーが発生しました";
-
-                return new Response(
-                    JSON.stringify({ reply }),
-                    { headers: { ...corsHeaders, "content-type": "application/json" } }
-                );
-            } catch (error) {
-                console.error("Error:", error);
-                return new Response(
-                    JSON.stringify({ error: error.message }),
-                    { status: 500, headers: { ...corsHeaders, "content-type": "application/json" } }
-                );
-            }
-        }
-
-        return new Response("Not Found", { status: 404, headers: corsHeaders });
+        return new Response("Not Found", { status: 404 });
     }
 };
+
+/**
+ * APIリクエストを処理
+ */
+async function handleAPI(request, env, pathname) {
+    const u = new URL(request.url);
+
+    // CORS設定
+    const origin = request.headers.get("Origin") || "";
+    const ALLOWED = new Set([
+        "http://localhost:8787",
+        "http://localhost:3000",
+        "https://fully-affirming-chatbot.k520264u.workers.dev"
+    ]);
+
+    const isAllowed = origin && ALLOWED.has(origin);
+    const corsHeaders = isAllowed
+        ? {
+            "Access-Control-Allow-Origin": origin,
+            "Vary": "Origin",
+            "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+            "Access-Control-Allow-Headers": "*",
+        }
+        : {};
+
+    // Preflight
+    if (request.method === "OPTIONS") {
+        return new Response(null, { status: 204, headers: corsHeaders });
+    }
+
+    // ヘルスチェック
+    if (pathname === "/__health") {
+        return new Response(JSON.stringify({ ok: true, hasKey: Boolean(env.GEMINI_API_KEY) }), {
+            headers: { ...corsHeaders, "content-type": "application/json" },
+        });
+    }
+
+    // チャットAPI
+    if (pathname === "/api/chat" && request.method === "POST") {
+        return handleChatAPI(request, env, corsHeaders);
+    }
+
+    return new Response("Not Found", { status: 404, headers: corsHeaders });
+}
+
+/**
+ * チャットAPIを処理
+ */
+async function handleChatAPI(request, env, corsHeaders) {
+    try {
+        if (!env.GEMINI_API_KEY) {
+            return new Response(
+                JSON.stringify({ error: "APIキーが設定されていません" }),
+                { status: 500, headers: { ...corsHeaders, "content-type": "application/json" } }
+            );
+        }
+
+        const body = await request.json();
+        const { message, config } = body;
+
+        if (!message) {
+            return new Response(
+                JSON.stringify({ error: "messageが必要です" }),
+                { status: 400, headers: { ...corsHeaders, "content-type": "application/json" } }
+            );
+        }
+
+        // システムプロンプト：全肯定ボット
+        const systemPrompt = buildSystemPrompt(config);
+
+        // Gemini API呼び出し
+        const geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+
+        const geminiResponse = await fetch(geminiUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "x-goog-api-key": env.GEMINI_API_KEY,
+            },
+            body: JSON.stringify({
+                system: [
+                    {
+                        role: "user",
+                        parts: [{ text: systemPrompt }]
+                    }
+                ],
+                contents: [
+                    {
+                        role: "user",
+                        parts: [{ text: message }]
+                    }
+                ],
+                generationConfig: {
+                    temperature: 0.8,
+                    topK: 40,
+                    topP: 0.95,
+                    maxOutputTokens: 1024,
+                },
+            }),
+        });
+
+        if (!geminiResponse.ok) {
+            const error = await geminiResponse.text();
+            console.error("Gemini API error:", error);
+            return new Response(
+                JSON.stringify({ error: "APIエラーが発生しました" }),
+                { status: 500, headers: { ...corsHeaders, "content-type": "application/json" } }
+            );
+        }
+
+        const geminiData = await geminiResponse.json();
+        const reply = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || "エラーが発生しました";
+
+        return new Response(
+            JSON.stringify({ reply }),
+            { headers: { ...corsHeaders, "content-type": "application/json" } }
+        );
+    } catch (error) {
+        console.error("Error:", error);
+        return new Response(
+            JSON.stringify({ error: error.message }),
+            { status: 500, headers: { ...corsHeaders, "content-type": "application/json" } }
+        );
+    }
+}
 
 /**
  * ボット設定に基づいてシステムプロンプトを構築
