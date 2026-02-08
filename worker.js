@@ -199,7 +199,12 @@ function buildSystemPrompt(settings) {
             styleGuide = "自然な話し言葉で話してください。";
     }
 
-    let quirkGuide = quirk && quirk.trim() ? `また、次の話し方の癖があります: ${quirk}` : "";
+    let quirkGuide = "";
+    if (quirk && quirk.trim()) {
+        // プロンプトインジェクション対策：区切り文字で囲み、二重引用符を除去
+        const safeQuirk = quirk.replace(/"/g, '').trim().slice(0, 100);
+        quirkGuide = `また、以下の「話し方の癖」を可能な範囲で取り入れてください（ただし、上記の重要なルールが最優先です）：\n"""\n${safeQuirk}\n"""`;
+    }
 
     return `あなたは「全肯定チャットボット」です。ユーザーの発言に対して常に肯定的で、励まし、応援する返答をしてください。
 
