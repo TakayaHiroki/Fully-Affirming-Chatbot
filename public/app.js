@@ -36,6 +36,13 @@ const chatMessages = document.getElementById('chat-messages');
 const messageInput = document.getElementById('message-input');
 const sendBtn = document.getElementById('send-btn');
 
+// グローバル設定
+const globalSettingsBtn = document.getElementById('global-settings-btn');
+const globalSettingsModal = document.getElementById('global-settings-modal');
+const closeGlobalSettingsBtn = document.getElementById('close-global-settings');
+const saveGlobalSettingsBtn = document.getElementById('save-global-settings');
+const globalQuirkInput = document.getElementById('global-quirk-input');
+
 // ===== Initialize =====
 function init() {
     loadData();
@@ -96,12 +103,20 @@ function setupEventListeners() {
     cancelTitleBtn.addEventListener('click', () => titleModal.classList.remove('active'));
     saveTitleBtn.addEventListener('click', saveTitle);
 
+    // グローバル設定モーダル
+    globalSettingsBtn.addEventListener('click', () => { openGlobalSettings(); closeSidebar(); });
+    closeGlobalSettingsBtn.addEventListener('click', () => globalSettingsModal.classList.remove('active'));
+    saveGlobalSettingsBtn.addEventListener('click', saveGlobalSettings);
+
     // モーダル外クリックで閉じる
     chatSettingsModal.addEventListener('click', (e) => {
         if (e.target === chatSettingsModal) chatSettingsModal.classList.remove('active');
     });
     titleModal.addEventListener('click', (e) => {
         if (e.target === titleModal) titleModal.classList.remove('active');
+    });
+    globalSettingsModal.addEventListener('click', (e) => {
+        if (e.target === globalSettingsModal) globalSettingsModal.classList.remove('active');
     });
 
     // 設定ボタン
@@ -253,6 +268,32 @@ function saveTitle() {
     updateChatTitle();
     renderChatList();
     titleModal.classList.remove('active');
+}
+
+// ===== Global Settings Modal =====
+function openGlobalSettings() {
+    document.querySelectorAll('[data-global-setting]').forEach(group => {
+        const settingName = group.dataset.globalSetting;
+        const value = state.defaultSettings[settingName];
+        group.querySelectorAll('.option-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.value === value);
+        });
+    });
+
+    globalQuirkInput.value = state.defaultSettings.quirk || '';
+    globalSettingsModal.classList.add('active');
+}
+
+function saveGlobalSettings() {
+    state.defaultSettings = {
+        gender: document.querySelector('[data-global-setting="gender"] .option-btn.active')?.dataset.value || 'female',
+        age: document.querySelector('[data-global-setting="age"] .option-btn.active')?.dataset.value || 'twenties',
+        style: document.querySelector('[data-global-setting="style"] .option-btn.active')?.dataset.value || 'casual',
+        quirk: globalQuirkInput.value
+    };
+
+    localStorage.setItem('chatbot-defaults', JSON.stringify(state.defaultSettings));
+    globalSettingsModal.classList.remove('active');
 }
 
 // ===== Message Rendering =====

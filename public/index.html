@@ -100,6 +100,55 @@
                 </div>
             </div>
 
+            <!-- グローバル設定モーダル -->
+            <div class="modal" id="global-settings-modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>グローバル設定</h3>
+                        <button class="modal-close" id="close-global-settings">✕</button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="settings-desc">新しいチャット作成時のデフォルト設定</p>
+                        <div class="setting-group">
+                            <label class="setting-label">👤 性別</label>
+                            <div class="option-buttons" data-global-setting="gender">
+                                <button class="option-btn" data-value="female">女性</button>
+                                <button class="option-btn" data-value="male">男性</button>
+                                <button class="option-btn" data-value="neutral">中性</button>
+                            </div>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">🎂 年齢層</label>
+                            <div class="option-buttons" data-global-setting="age">
+                                <button class="option-btn" data-value="teen">10代</button>
+                                <button class="option-btn" data-value="twenties">20代</button>
+                                <button class="option-btn" data-value="older">30代以上</button>
+                            </div>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">💬 話し方</label>
+                            <div class="option-buttons style-options" data-global-setting="style">
+                                <button class="option-btn" data-value="polite">敬語</button>
+                                <button class="option-btn" data-value="casual">タメ口</button>
+                                <button class="option-btn" data-value="gyaru">ギャル語</button>
+                                <button class="option-btn" data-value="kansai">関西弁</button>
+                                <button class="option-btn" data-value="ojisan">おじさん構文</button>
+                                <button class="option-btn" data-value="tsundere">ツンデレ</button>
+                                <button class="option-btn" data-value="butler">執事</button>
+                                <button class="option-btn" data-value="anime">アニメキャラ</button>
+                            </div>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">✨ 話し方の癖（任意）</label>
+                            <input type="text" id="global-quirk-input" class="text-input" placeholder="例：語尾に「にゃ」をつける">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="primary-btn" id="save-global-settings">保存</button>
+                    </div>
+                </div>
+            </div>
+
             <!-- チャット画面 -->
             <div id="chat-screen" class="screen active">
                 <div class="chat-messages" id="chat-messages"></div>
