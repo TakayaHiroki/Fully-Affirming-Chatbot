@@ -5,99 +5,98 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>全肯定チャットボット 💖</title>
-    <meta name="description" content="あなたを全力で肯定してくれるAIチャットボット。どんな時でもあなたの味方です！">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <meta name="description" content="あなたを全力で肯定してくれるAIチャットボット">
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-    <div class="container">
-        <!-- 設定画面 -->
-        <div id="settings-screen" class="screen active">
-            <div class="card settings-card">
-                <div class="card-header">
-                    <h1>🌟 全肯定チャットボット 🌟</h1>
-                    <p class="subtitle">あなたを全力で肯定してくれるAIです！</p>
-                </div>
-
-                <div class="settings-form">
-                    <div class="setting-group">
-                        <label class="setting-label">
-                            <span class="label-icon">👤</span>
-                            ボットの性別
-                        </label>
-                        <div class="option-buttons">
-                            <button class="option-btn active" data-setting="gender" data-value="female">女性</button>
-                            <button class="option-btn" data-setting="gender" data-value="male">男性</button>
-                            <button class="option-btn" data-setting="gender" data-value="neutral">中性</button>
-                        </div>
-                    </div>
-
-                    <div class="setting-group">
-                        <label class="setting-label">
-                            <span class="label-icon">🎂</span>
-                            年齢層
-                        </label>
-                        <div class="option-buttons">
-                            <button class="option-btn" data-setting="age" data-value="teen">10代</button>
-                            <button class="option-btn active" data-setting="age" data-value="twenties">20代</button>
-                            <button class="option-btn" data-setting="age" data-value="older">30代以上</button>
-                        </div>
-                    </div>
-
-                    <div class="setting-group">
-                        <label class="setting-label">
-                            <span class="label-icon">💬</span>
-                            話し方
-                        </label>
-                        <div class="option-buttons">
-                            <button class="option-btn" data-setting="style" data-value="polite">敬語</button>
-                            <button class="option-btn active" data-setting="style" data-value="casual">タメ口</button>
-                            <button class="option-btn" data-setting="style" data-value="gyaru">ギャル語</button>
-                            <button class="option-btn" data-setting="style" data-value="kansai">関西弁</button>
-                        </div>
-                    </div>
-
-                    <div class="setting-group">
-                        <label class="setting-label">
-                            <span class="label-icon">✨</span>
-                            話し方の癖（任意）
-                        </label>
-                        <input type="text" id="quirk-input" class="text-input" placeholder="例：語尾に「にゃ」をつける">
-                    </div>
-                </div>
-
-                <button id="start-chat-btn" class="primary-btn">
-                    チャットを始める 💬
+    <div class="app">
+        <!-- サイドバー（チャット一覧） -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <button class="new-chat-btn" id="new-chat-btn">
+                    ＋ 新しいチャット
                 </button>
             </div>
-        </div>
+            <div class="chat-list" id="chat-list">
+                <!-- チャット一覧がここに動的に追加される -->
+            </div>
+            <div class="sidebar-footer">
+                <button class="sidebar-btn" id="settings-btn">⚙️ 設定</button>
+            </div>
+        </aside>
 
-        <!-- チャット画面 -->
-        <div id="chat-screen" class="screen">
-            <div class="card chat-card">
-                <div class="chat-header">
-                    <button id="settings-btn" class="icon-btn" title="設定を変更">⚙️</button>
-                    <h2>全肯定チャット 💖</h2>
-                    <button id="clear-btn" class="icon-btn" title="履歴をクリア">🗑️</button>
+        <!-- メインエリア -->
+        <main class="main-area">
+            <!-- ヘッダー（常に表示） -->
+            <header class="header">
+                <button class="menu-btn" id="menu-btn">☰</button>
+                <h1 id="chat-title">新しいチャット</h1>
+                <button class="delete-btn" id="delete-chat-btn" title="このチャットを削除">🗑️</button>
+            </header>
+
+            <!-- 設定画面 -->
+            <div id="settings-screen" class="screen">
+                <div class="settings-container">
+                    <h2>ボットの設定</h2>
+                    <p class="settings-desc">AIの性格をカスタマイズできます</p>
+
+                    <div class="settings-form">
+                        <div class="setting-group">
+                            <label class="setting-label">👤 性別</label>
+                            <div class="option-buttons">
+                                <button class="option-btn active" data-setting="gender" data-value="female">女性</button>
+                                <button class="option-btn" data-setting="gender" data-value="male">男性</button>
+                                <button class="option-btn" data-setting="gender" data-value="neutral">中性</button>
+                            </div>
+                        </div>
+
+                        <div class="setting-group">
+                            <label class="setting-label">🎂 年齢層</label>
+                            <div class="option-buttons">
+                                <button class="option-btn" data-setting="age" data-value="teen">10代</button>
+                                <button class="option-btn active" data-setting="age" data-value="twenties">20代</button>
+                                <button class="option-btn" data-setting="age" data-value="older">30代以上</button>
+                            </div>
+                        </div>
+
+                        <div class="setting-group">
+                            <label class="setting-label">💬 話し方</label>
+                            <div class="option-buttons">
+                                <button class="option-btn" data-setting="style" data-value="polite">敬語</button>
+                                <button class="option-btn active" data-setting="style" data-value="casual">タメ口</button>
+                                <button class="option-btn" data-setting="style" data-value="gyaru">ギャル語</button>
+                                <button class="option-btn" data-setting="style" data-value="kansai">関西弁</button>
+                            </div>
+                        </div>
+
+                        <div class="setting-group">
+                            <label class="setting-label">✨ 話し方の癖（任意）</label>
+                            <input type="text" id="quirk-input" class="text-input" placeholder="例：語尾に「にゃ」をつける">
+                        </div>
+                    </div>
+
+                    <button id="save-settings-btn" class="primary-btn">設定を保存</button>
                 </div>
+            </div>
 
-                <div id="chat-messages" class="chat-messages">
+            <!-- チャット画面 -->
+            <div id="chat-screen" class="screen active">
+                <div class="chat-messages" id="chat-messages">
+                    <!-- メッセージがここに追加される -->
                 </div>
 
                 <div class="chat-input-area">
-                    <div>
+                    <div class="input-wrapper">
                         <textarea id="message-input" class="message-input" placeholder="メッセージを入力..."
                             rows="1"></textarea>
                         <button id="send-btn" class="send-btn" disabled>
-                            <span class="send-icon">➤</span>
+                            <span>➤</span>
                         </button>
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 
     <script src="app.js"></script>
