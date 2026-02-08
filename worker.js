@@ -34,7 +34,7 @@ export default {
 
         // ヘルスチェック（設定確認用）
         if (api === "__health") {
-            return new Response(JSON.stringify({ ok: true, hasKey: Boolean(env.RFL_KEY) }), {
+            return new Response(JSON.stringify({ ok: true, hasKey: Boolean(env.API_KEY) }), {
                 headers: { ...corsHeaders, "content-type": "application/json" },
             });
         }
@@ -49,7 +49,7 @@ export default {
         const res = await fetch(targetUrl.toString(), {
             method: "GET",
             headers: {
-                "Ocp-Apim-Subscription-Key": env.RFL_KEY, // Secretから読み込み
+                "Ocp-Apim-Subscription-Key": env.API_KEY, // Secretから読み込み
             },
         });
 
