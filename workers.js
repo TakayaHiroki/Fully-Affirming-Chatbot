@@ -8,7 +8,7 @@ export default {
         // 許可するURLリスト（末尾のスラッシュは無しで記述）
         const ALLOWED = new Set([
             "http://localhost:8787",             // ローカル開発用
-            // "https://<PAGES_URL>.pages.dev"  // ★あとでPagesのURLをここに追加
+            "https://fully-affirming-chatbot.k520264u.workers.dev/"
         ]);
 
         const isAllowed = origin && ALLOWED.has(origin);
