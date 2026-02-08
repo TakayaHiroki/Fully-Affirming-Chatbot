@@ -1,8 +1,5 @@
 {
   "name": "fully-affirming-chatbot",
   "compatibility_date": "2026-02-08",
-    "assets": {
-    "directory": "."
-  },
   "main": "worker.js"
 }
